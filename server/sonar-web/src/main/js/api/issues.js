@@ -97,7 +97,9 @@ export function getIssuesCount(query: {}): Promise<*> {
   });
 }
 
-export const searchIssueTags = (ps: number = 500) => getJSON('/api/issues/tags', { ps });
+export const searchIssueTags = (
+  data: { ps?: number, q?: string } = { ps: 500 }
+): Promise<Array<string>> => getJSON('/api/issues/tags', data).then(r => r.tags);
 
 export function getIssueChangelog(issue: string): Promise<*> {
   const url = '/api/issues/changelog';

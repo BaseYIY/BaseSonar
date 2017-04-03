@@ -49,6 +49,7 @@ import componentMeasuresRoutes from '../../apps/component-measures/routes';
 import customMeasuresRoutes from '../../apps/custom-measures/routes';
 import groupsRoutes from '../../apps/groups/routes';
 import issuesRoutes from '../../apps/issues/routes';
+import issues2Routes from '../../apps/issues2/routes';
 import metricsRoutes from '../../apps/metrics/routes';
 import overviewRoutes from '../../apps/overview/routes';
 import organizationsRoutes from '../../apps/organizations/routes';
@@ -149,6 +150,7 @@ const startReactApp = () => {
                 <Route path="component" childRoutes={componentRoutes} />
                 <Route path="extension/:pluginKey/:extensionKey" component={GlobalPageExtension} />
                 <Route path="issues" childRoutes={issuesRoutes} />
+                <Route path="new-issues" childRoutes={issues2Routes} />
                 <Route path="organizations" childRoutes={organizationsRoutes} />
                 <Route path="projects" childRoutes={projectsRoutes} />
                 <Route path="quality_gates" childRoutes={qualityGatesRoutes} />
@@ -176,6 +178,7 @@ const startReactApp = () => {
                       component={ProjectPageExtension}
                     />
                     <Route path="background_tasks" childRoutes={backgroundTasksRoutes} />
+                    <Route path="issues" childRoutes={issues2Routes} />
                     <Route path="settings" childRoutes={settingsRoutes} />
                     {projectAdminRoutes}
                   </Route>

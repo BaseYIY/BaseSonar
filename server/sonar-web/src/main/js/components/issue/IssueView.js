@@ -20,7 +20,6 @@
 // @flow
 import React from 'react';
 import classNames from 'classnames';
-import Checkbox from '../../components/controls/Checkbox';
 import IssueTitleBar from './components/IssueTitleBar';
 import IssueActionsBar from './components/IssueActionsBar';
 import IssueCommentLine from './components/IssueCommentLine';
@@ -32,7 +31,7 @@ type Props = {
   currentPopup: string,
   issue: Issue,
   onAssign: (string) => void,
-  onCheck?: () => void,
+  onCheck?: (string) => void,
   onClick: (string) => void,
   onFail: (Error) => void,
   onFilterClick?: () => void,
@@ -44,8 +43,16 @@ type Props = {
 export default class IssueView extends React.PureComponent {
   props: Props;
 
-  handleClick = (evt: MouseEvent) => {
-    evt.preventDefault();
+  handleCheck = (event: Event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.props.onCheck) {
+      this.props.onCheck(this.props.issue.key);
+    }
+  };
+
+  handleClick = (event: Event & { target: HTMLElement }) => {
+    event.preventDefault();
     if (this.props.onClick) {
       this.props.onClick(this.props.issue.key);
     }
@@ -74,8 +81,8 @@ export default class IssueView extends React.PureComponent {
         className={issueClass}
         data-issue={issue.key}
         onClick={this.handleClick}
-        tabIndex={0}
-        role="listitem">
+        role="listitem"
+        tabIndex={0}>
         <IssueTitleBar
           issue={issue}
           currentPopup={this.props.currentPopup}
@@ -108,13 +115,13 @@ export default class IssueView extends React.PureComponent {
           <i className="issue-navigate-to-right icon-chevron-right" />
         </a>
         {hasCheckbox &&
-          <div className="js-toggle issue-checkbox-container">
-            <Checkbox
-              className="issue-checkbox"
-              onCheck={this.props.onCheck}
-              checked={this.props.checked}
+          <a className="js-toggle issue-checkbox-container" href="#" onClick={this.handleCheck}>
+            <i
+              className={classNames('issue-checkbox', 'icon-checkbox', {
+                'icon-checkbox-checked': this.props.checked
+              })}
             />
-          </div>}
+          </a>}
       </div>
     );
   }

@@ -71,6 +71,20 @@ export default class GlobalNavMenu extends React.Component {
     );
   }
 
+  renderIssues2Link() {
+    const query = this.props.currentUser.isLoggedIn
+      ? { myIssues: 'true', resolved: 'false' }
+      : { resolved: 'false' };
+    return (
+      <li>
+        <Link to={{ pathname: '/new-issues', query }} activeClassName="active">
+          <span className="badge spacer-right">New</span>
+          {translate('issues.page')}
+        </Link>
+      </li>
+    );
+  }
+
   renderRulesLink() {
     return (
       <li>
@@ -149,6 +163,7 @@ export default class GlobalNavMenu extends React.Component {
       <ul className="nav navbar-nav">
         {this.renderProjects()}
         {governanceInstalled && this.renderPortfolios()}
+        {this.renderIssues2Link()}
         {this.renderIssuesLink()}
         {!organizationsEnabled && this.renderRulesLink()}
         {!organizationsEnabled && this.renderProfilesLink()}

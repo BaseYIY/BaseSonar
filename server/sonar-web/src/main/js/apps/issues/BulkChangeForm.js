@@ -66,8 +66,8 @@ export default ModalForm.extend({
   },
 
   loadTags() {
-    searchIssueTags().then(r => {
-      this.tags = r.tags;
+    searchIssueTags().then(tags => {
+      this.tags = tags;
       this.render();
     });
   },

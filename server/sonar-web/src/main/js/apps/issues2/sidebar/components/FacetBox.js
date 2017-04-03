@@ -17,14 +17,18 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
+// @flow
 import React from 'react';
 
-export default React.createClass({
-  render() {
-    if (!this.props.qualifier) {
-      return null;
-    }
-    const className = 'icon-qualifier-' + this.props.qualifier.toLowerCase();
-    return <i className={className} />;
-  }
-});
+type Props = {|
+  children?: React.Element<*>,
+  property: string
+|};
+
+const FacetBox = (props: Props) => (
+  <div className="search-navigator-facet-box" data-property={props.property}>
+    {props.children}
+  </div>
+);
+
+export default FacetBox;

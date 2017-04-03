@@ -25,6 +25,27 @@ exports[`test should work with extensions 1`] = `
       style={Object {}}
       to={
         Object {
+          "pathname": "/project/issues",
+          "query": Object {
+            "id": "foo",
+            "resolved": "false",
+          },
+        }
+      }>
+      <span
+        className="badge spacer-right">
+        New
+      </span>
+      issues.page
+    </Link>
+  </li>
+  <li>
+    <Link
+      activeClassName="active"
+      onlyActiveOnIndex={false}
+      style={Object {}}
+      to={
+        Object {
           "pathname": "/component_issues",
           "query": Object {
             "id": "foo",

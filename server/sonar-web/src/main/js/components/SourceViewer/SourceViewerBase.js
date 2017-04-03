@@ -220,8 +220,6 @@ export default class SourceViewerBase extends React.Component {
   }
 
   fetchComponent() {
-    this.setState({ loading: true });
-
     const loadIssues = (component, sources) => {
       this.props.loadIssues(this.props.component, 1, LINES).then(issues => {
         this.props.onReceiveIssues(issues);

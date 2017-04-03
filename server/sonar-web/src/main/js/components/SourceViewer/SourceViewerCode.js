@@ -97,8 +97,11 @@ export default class SourceViewerCode extends React.PureComponent {
   }
 
   getSecondaryIssueLocationMessagesForLine(line: SourceLine, issueKey: string) {
-    return this.props.issueSecondaryLocationMessagesByIssueByLine[issueKey][line.line] ||
-      EMPTY_ARRAY;
+    const index = this.props.issueSecondaryLocationMessagesByIssueByLine;
+    if (index[issueKey] == null) {
+      return EMPTY_ARRAY;
+    }
+    return index[issueKey][line.line] || EMPTY_ARRAY;
   }
 
   renderLine = (
