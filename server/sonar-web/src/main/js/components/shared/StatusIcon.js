@@ -17,35 +17,11 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-// @flow
+//@flow
 import React from 'react';
 import classNames from 'classnames';
-import './TagsList.css';
 
-type Props = {
-  tags: Array<string>,
-  allowUpdate: boolean,
-  customClass?: string
-};
-
-export default class TagsList extends React.PureComponent {
-  props: Props;
-
-  static defaultProps = {
-    allowUpdate: false
-  };
-
-  render() {
-    const { tags, allowUpdate } = this.props;
-    const spanClass = classNames('text-ellipsis', { note: !allowUpdate });
-    const tagListClass = classNames('tags-list', this.props.customClass);
-
-    return (
-      <span className={tagListClass} title={tags.join(', ')}>
-        <i className="icon-tags icon-half-transparent" />
-        <span className={spanClass}>{tags.join(', ')}</span>
-        {allowUpdate && <i className="icon-dropdown" />}
-      </span>
-    );
-  }
+export default function StatusIcon(props: { status: string, className?: string }) {
+  const className = classNames('icon-status-' + props.status.toLowerCase(), props.className);
+  return <i className={className} />;
 }

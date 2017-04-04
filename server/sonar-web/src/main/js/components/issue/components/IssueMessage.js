@@ -19,33 +19,35 @@
  */
 // @flow
 import React from 'react';
-import classNames from 'classnames';
-import './TagsList.css';
+import { translate } from '../../../helpers/l10n';
 
-type Props = {
-  tags: Array<string>,
-  allowUpdate: boolean,
-  customClass?: string
-};
+export default class IssueMessage extends React.PureComponent {
+  props: {
+    message: string,
+    rule: string,
+    organization: string
+  };
 
-export default class TagsList extends React.PureComponent {
-  props: Props;
-
-  static defaultProps = {
-    allowUpdate: false
+  handleClick = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const Workspace = require('../../workspace/main').default;
+    Workspace.openRule({
+      key: this.props.rule,
+      organization: this.props.organization
+    });
   };
 
   render() {
-    const { tags, allowUpdate } = this.props;
-    const spanClass = classNames('text-ellipsis', { note: !allowUpdate });
-    const tagListClass = classNames('tags-list', this.props.customClass);
-
     return (
-      <span className={tagListClass} title={tags.join(', ')}>
-        <i className="icon-tags icon-half-transparent" />
-        <span className={spanClass}>{tags.join(', ')}</span>
-        {allowUpdate && <i className="icon-dropdown" />}
-      </span>
+      <div className="issue-message">
+        {this.props.message}{' '}
+        <button
+          className="button-link issue-rule icon-ellipsis-h"
+          aria-label={translate('issue.rule_details')}
+          onClick={this.handleClick}
+        />
+      </div>
     );
   }
 }

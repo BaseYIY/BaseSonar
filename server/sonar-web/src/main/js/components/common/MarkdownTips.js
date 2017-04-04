@@ -19,33 +19,26 @@
  */
 // @flow
 import React from 'react';
-import classNames from 'classnames';
-import './TagsList.css';
+import { getMarkdownHelpUrl } from '../../helpers/urls';
+import { translate } from '../../helpers/l10n';
 
-type Props = {
-  tags: Array<string>,
-  allowUpdate: boolean,
-  customClass?: string
-};
-
-export default class TagsList extends React.PureComponent {
-  props: Props;
-
-  static defaultProps = {
-    allowUpdate: false
-  };
+export default class MarkdownTips extends React.PureComponent {
+  handleClick(evt: MouseEvent) {
+    evt.preventDefault();
+    window.open(getMarkdownHelpUrl(), 'height=300,width=600,scrollbars=1,resizable=1');
+  }
 
   render() {
-    const { tags, allowUpdate } = this.props;
-    const spanClass = classNames('text-ellipsis', { note: !allowUpdate });
-    const tagListClass = classNames('tags-list', this.props.customClass);
-
     return (
-      <span className={tagListClass} title={tags.join(', ')}>
-        <i className="icon-tags icon-half-transparent" />
-        <span className={spanClass}>{tags.join(', ')}</span>
-        {allowUpdate && <i className="icon-dropdown" />}
-      </span>
+      <div className="markdown-tips">
+        <a className="little-spacer-right" href="#" onClick={this.handleClick}>
+          {translate('markdown.helplink')}
+        </a>
+        {':'}
+        <span className="spacer-left">*{translate('bold')}*</span>
+        <span className="spacer-left">``{translate('code')}``</span>
+        <span className="spacer-left">* {translate('bulleted_point')}</span>
+      </div>
     );
   }
 }

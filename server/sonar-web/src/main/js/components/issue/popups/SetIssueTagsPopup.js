@@ -19,17 +19,17 @@
  */
 //@flow
 import React from 'react';
-import { connect } from 'react-redux';
 import { debounce, without } from 'lodash';
 import TagsSelector from '../../../components/tags/TagsSelector';
-import { searchProjectTags } from '../../../api/components';
-import { setProjectTags } from '../store/actions';
+import { searchIssueTags } from '../../../api/issues';
+import type { Issue } from '../types';
 
 type Props = {
-  position: {},
-  project: string,
+  issue: Issue,
+  popupPosition?: {},
+  onFail: (Error) => void,
   selectedTags: Array<string>,
-  setProjectTags: (string, Array<string>) => void
+  setTags: (Array<string>) => void
 };
 
 type State = {
@@ -38,7 +38,7 @@ type State = {
 
 const LIST_SIZE = 10;
 
-class ProjectTagsSelectorContainer extends React.PureComponent {
+export default class SetIssueTagsPopup extends React.PureComponent {
   props: Props;
   state: State;
 
@@ -53,28 +53,29 @@ class ProjectTagsSelectorContainer extends React.PureComponent {
   }
 
   onSearch = (query: string) => {
-    searchProjectTags({
+    searchIssueTags({
       q: query || '',
       ps: Math.min(this.props.selectedTags.length - 1 + LIST_SIZE, 100)
-    }).then(result => {
-      this.setState({
-        searchResult: result.tags
-      });
-    });
+    }).then(
+      (tags: Array<string>) => {
+        this.setState({ searchResult: tags });
+      },
+      this.props.onFail
+    );
   };
 
   onSelect = (tag: string) => {
-    this.props.setProjectTags(this.props.project, [...this.props.selectedTags, tag]);
+    this.props.setTags([...this.props.selectedTags, tag]);
   };
 
   onUnselect = (tag: string) => {
-    this.props.setProjectTags(this.props.project, without(this.props.selectedTags, tag));
+    this.props.setTags(without(this.props.selectedTags, tag));
   };
 
   render() {
     return (
       <TagsSelector
-        position={this.props.position}
+        position={this.props.popupPosition}
         tags={this.state.searchResult}
         selectedTags={this.props.selectedTags}
         listSize={LIST_SIZE}
@@ -85,5 +86,3 @@ class ProjectTagsSelectorContainer extends React.PureComponent {
     );
   }
 }
-
-export default connect(null, { setProjectTags })(ProjectTagsSelectorContainer);

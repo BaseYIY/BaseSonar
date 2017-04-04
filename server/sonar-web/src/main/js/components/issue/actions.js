@@ -18,19 +18,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 // @flow
-import { connect } from 'react-redux';
-import BaseIssue from './BaseIssue';
-import { getIssueByKey } from '../../store/rootReducer';
+import type { Dispatch } from 'redux';
+import type { Issue } from './types';
 import { onFail } from '../../store/rootActions';
-import { updateIssue } from './actions';
+import { receiveIssues } from '../../store/issues/duck';
+import { parseIssueFromResponse } from '../../helpers/issues';
 
-const mapStateToProps = (state, ownProps) => ({
-  issue: getIssueByKey(state, ownProps.issueKey)
-});
-
-const mapDispatchToProps = {
-  onIssueChange: updateIssue,
-  onFail: error => dispatch => onFail(dispatch)(error)
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BaseIssue);
+export const updateIssue = (resultPromise: Promise<*>, oldIssue?: Issue, newIssue?: Issue) =>
+  (dispatch: Dispatch<*>) => {
+    if (oldIssue && newIssue) {
+      dispatch(receiveIssues([newIssue]));
+    }
+    resultPromise.then(
+      response => {
+        dispatch(
+          receiveIssues([
+            parseIssueFromResponse(
+              response.issue,
+              response.components,
+              response.users,
+              response.rules
+            )
+          ])
+        );
+      },
+      error => {
+        onFail(dispatch)(error);
+        if (oldIssue && newIssue) {
+          dispatch(receiveIssues([oldIssue]));
+        }
+      }
+    );
+  };

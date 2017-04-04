@@ -19,33 +19,23 @@
  */
 // @flow
 import React from 'react';
-import classNames from 'classnames';
-import './TagsList.css';
+import { translate } from '../../../helpers/l10n';
+import BubblePopup from '../../../components/common/BubblePopup';
+import type { IssueComment } from '../types';
 
 type Props = {
-  tags: Array<string>,
-  allowUpdate: boolean,
-  customClass?: string
+  comment: IssueComment,
+  onDelete: () => void,
+  popupPosition?: {}
 };
 
-export default class TagsList extends React.PureComponent {
-  props: Props;
-
-  static defaultProps = {
-    allowUpdate: false
-  };
-
-  render() {
-    const { tags, allowUpdate } = this.props;
-    const spanClass = classNames('text-ellipsis', { note: !allowUpdate });
-    const tagListClass = classNames('tags-list', this.props.customClass);
-
-    return (
-      <span className={tagListClass} title={tags.join(', ')}>
-        <i className="icon-tags icon-half-transparent" />
-        <span className={spanClass}>{tags.join(', ')}</span>
-        {allowUpdate && <i className="icon-dropdown" />}
-      </span>
-    );
-  }
+export default function CommentDeletePopup(props: Props) {
+  return (
+    <BubblePopup position={props.popupPosition} customClass="bubble-popup-bottom-right">
+      <div className="text-right">
+        <div className="spacer-bottom">{translate('issue.comment.delete_confirm_message')}</div>
+        <button className="button-red" onClick={props.onDelete}>{translate('delete')}</button>
+      </div>
+    </BubblePopup>
+  );
 }
