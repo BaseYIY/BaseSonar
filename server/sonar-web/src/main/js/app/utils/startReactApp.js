@@ -44,12 +44,10 @@ import backgroundTasksRoutes from '../../apps/background-tasks/routes';
 import codeRoutes from '../../apps/code/routes';
 import codingRulesRoutes from '../../apps/coding-rules/routes';
 import componentRoutes from '../../apps/component/routes';
-import componentIssuesRoutes from '../../apps/component-issues/routes';
 import componentMeasuresRoutes from '../../apps/component-measures/routes';
 import customMeasuresRoutes from '../../apps/custom-measures/routes';
 import groupsRoutes from '../../apps/groups/routes';
 import issuesRoutes from '../../apps/issues/routes';
-import issues2Routes from '../../apps/issues2/routes';
 import metricsRoutes from '../../apps/metrics/routes';
 import overviewRoutes from '../../apps/overview/routes';
 import organizationsRoutes from '../../apps/organizations/routes';
@@ -150,7 +148,6 @@ const startReactApp = () => {
                 <Route path="component" childRoutes={componentRoutes} />
                 <Route path="extension/:pluginKey/:extensionKey" component={GlobalPageExtension} />
                 <Route path="issues" childRoutes={issuesRoutes} />
-                <Route path="new-issues" childRoutes={issues2Routes} />
                 <Route path="organizations" childRoutes={organizationsRoutes} />
                 <Route path="projects" childRoutes={projectsRoutes} />
                 <Route path="quality_gates" childRoutes={qualityGatesRoutes} />
@@ -160,7 +157,6 @@ const startReactApp = () => {
 
                 <Route component={ProjectContainer}>
                   <Route path="code" childRoutes={codeRoutes} />
-                  <Route path="component_issues" childRoutes={componentIssuesRoutes} />
                   <Route path="component_measures" childRoutes={componentMeasuresRoutes} />
                   <Route path="custom_measures" childRoutes={customMeasuresRoutes} />
                   <Route path="dashboard" childRoutes={overviewRoutes} />
@@ -178,7 +174,7 @@ const startReactApp = () => {
                       component={ProjectPageExtension}
                     />
                     <Route path="background_tasks" childRoutes={backgroundTasksRoutes} />
-                    <Route path="issues" childRoutes={issues2Routes} />
+                    <Route path="issues" childRoutes={issuesRoutes} />
                     <Route path="settings" childRoutes={settingsRoutes} />
                     {projectAdminRoutes}
                   </Route>

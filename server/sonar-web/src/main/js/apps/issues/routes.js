@@ -19,11 +19,9 @@
  */
 const routes = [
   {
-    indexRoute: {
-      getComponent(_, callback) {
-        require.ensure([], require =>
-          callback(null, require('./components/IssuesAppContainer').default));
-      }
+    getIndexRoute(_, callback) {
+      require.ensure([], require =>
+        callback(null, { component: require('./components/AppContainer').default }));
     }
   }
 ];
