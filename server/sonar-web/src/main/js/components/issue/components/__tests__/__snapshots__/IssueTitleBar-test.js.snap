@@ -51,7 +51,7 @@ exports[`test should render the titlebar correctly 1`] = `
                 Object {
                   "pathname": "/issues",
                   "query": Object {
-                    "issue": "AVsae-CQS-9G3txfbFN2",
+                    "issues": "AVsae-CQS-9G3txfbFN2",
                   },
                 }
               } />
@@ -116,7 +116,7 @@ exports[`test should render the titlebar with the filter 1`] = `
                 Object {
                   "pathname": "/issues",
                   "query": Object {
-                    "issue": "AVsae-CQS-9G3txfbFN2",
+                    "issues": "AVsae-CQS-9G3txfbFN2",
                   },
                 }
               } />

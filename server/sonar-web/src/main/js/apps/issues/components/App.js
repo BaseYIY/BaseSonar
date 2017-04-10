@@ -58,7 +58,6 @@ import type { Issue } from '../../../components/issue/types';
 
 // TODO bulk change
 // TODO filter similar issues
-// TODO issue permalink
 // TODO request facets on demand
 // TODO reload button
 // TODO no results

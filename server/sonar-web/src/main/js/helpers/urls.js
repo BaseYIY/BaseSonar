@@ -51,11 +51,9 @@ export function getComponentIssuesUrl(componentKey, query) {
 
 /**
  * Generate URL for a single issue
- * @param {string} issueKey
- * @returns {string}
  */
-export function getSingleIssueUrl(issue) {
-  return { pathname: '/issues', query: { issue } };
+export function getSingleIssueUrl(issues) {
+  return { pathname: '/issues', query: { issues } };
 }
 
 /**
