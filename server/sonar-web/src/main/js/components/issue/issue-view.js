@@ -73,7 +73,6 @@ export default Marionette.ItemView.extend({
       onIssueChange(this.model.toJSON());
     }
 
-    // if ConnectedIssue is used, this view can be destroyed just after onIssueChange()
     if (!this.isDestroyed) {
       this.render();
     }

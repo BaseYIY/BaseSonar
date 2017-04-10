@@ -27,6 +27,7 @@ type Props = {|
   checked: Array<string>,
   component?: Component,
   issues: Array<Issue>,
+  onIssueChange: (Issue) => void,
   onIssueCheck?: (string) => void,
   onIssueClick: (string) => void,
   selectedIssue: ?Issue
@@ -46,10 +47,11 @@ export default class IssuesList extends React.PureComponent {
             component={component}
             key={issue.key}
             issue={issue}
+            onChange={this.props.onIssueChange}
             onCheck={this.props.onIssueCheck}
             onClick={this.props.onIssueClick}
             previousIssue={index > 0 ? issues[index - 1] : null}
-            selected={selectedIssue && selectedIssue.key === issue.key}
+            selected={selectedIssue != null && selectedIssue.key === issue.key}
           />
         ))}
       </div>

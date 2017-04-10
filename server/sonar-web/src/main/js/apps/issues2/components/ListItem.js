@@ -25,9 +25,14 @@ import type { Issue as IssueType } from '../../../components/issue/types';
 import type { Component } from '../utils';
 
 type Props = {
+  checked: boolean,
   component?: Component,
   issue: IssueType,
-  previousIssue: ?Object
+  onChange: (IssueType) => void,
+  onCheck?: (string) => void,
+  onClick: (string) => void,
+  previousIssue: ?Object,
+  selected: boolean
 };
 
 export default class ListItem extends React.PureComponent {
@@ -44,7 +49,14 @@ export default class ListItem extends React.PureComponent {
           <div className="issues-workspace-list-component">
             <ComponentBreadcrumbs component={component} issue={this.props.issue} />
           </div>}
-        <Issue {...this.props} />
+        <Issue
+          checked={this.props.checked}
+          issue={issue}
+          onChange={this.props.onChange}
+          onCheck={this.props.onCheck}
+          onClick={this.props.onClick}
+          selected={this.props.selected}
+        />
       </div>
     );
   }

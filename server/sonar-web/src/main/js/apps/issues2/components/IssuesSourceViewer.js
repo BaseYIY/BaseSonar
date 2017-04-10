@@ -25,6 +25,7 @@ import type { Issue } from '../../../components/issue/types';
 
 type Props = {|
   loadIssues: () => Promise<*>,
+  onIssueChange: (Issue) => void,
   onIssueSelect: (string) => void,
   openIssue: Issue
 |};
@@ -57,6 +58,7 @@ export default class IssuesSourceViewer extends React.PureComponent {
           displayAllIssues={true}
           loadIssues={this.props.loadIssues}
           onLoaded={this.scrollToIssue}
+          onIssueChange={this.props.onIssueChange}
           onIssueSelect={this.props.onIssueSelect}
           selectedIssue={openIssue.key}
         />

@@ -21,7 +21,7 @@ import $ from 'jquery';
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import Marionette from 'backbone.marionette';
-import ConnectedIssue from '../../components/issue/ConnectedIssue';
+import Issue from '../../components/issue/Issue';
 import IssueFilterView from './issue-filter-view';
 import WithStore from '../../components/shared/WithStore';
 import getStore from '../../app/utils/getStore';
@@ -72,7 +72,7 @@ export default Marionette.ItemView.extend({
 
     render(
       <WithStore>
-        <ConnectedIssue
+        <Issue
           issueKey={this.model.get('key')}
           checked={this.model.get('selected')}
           onCheck={this.onIssueCheck}

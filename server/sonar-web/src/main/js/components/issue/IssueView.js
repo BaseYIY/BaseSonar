@@ -23,6 +23,7 @@ import classNames from 'classnames';
 import IssueTitleBar from './components/IssueTitleBar';
 import IssueActionsBar from './components/IssueActionsBar';
 import IssueCommentLine from './components/IssueCommentLine';
+import { updateIssue } from './actions';
 import { deleteIssueComment, editIssueComment } from '../../api/issues';
 import type { Issue } from './types';
 
@@ -31,11 +32,11 @@ type Props = {
   currentPopup: string,
   issue: Issue,
   onAssign: (string) => void,
+  onChange: (Issue) => void,
   onCheck?: (string) => void,
   onClick: (string) => void,
   onFail: (Error) => void,
   onFilterClick?: () => void,
-  onIssueChange: (Promise<*>, oldIssue?: Issue, newIssue?: Issue) => void,
   selected: boolean,
   togglePopup: (string) => void
 };
@@ -59,11 +60,11 @@ export default class IssueView extends React.PureComponent {
   };
 
   editComment = (comment: string, text: string) => {
-    this.props.onIssueChange(editIssueComment({ comment, text }));
+    updateIssue(this.props.onChange, editIssueComment({ comment, text }));
   };
 
   deleteComment = (comment: string) => {
-    this.props.onIssueChange(deleteIssueComment({ comment }));
+    updateIssue(this.props.onChange, deleteIssueComment({ comment }));
   };
 
   render() {
@@ -96,7 +97,7 @@ export default class IssueView extends React.PureComponent {
           onAssign={this.props.onAssign}
           onFail={this.props.onFail}
           togglePopup={this.props.togglePopup}
-          onIssueChange={this.props.onIssueChange}
+          onChange={this.props.onChange}
         />
         {issue.comments &&
           issue.comments.length > 0 &&

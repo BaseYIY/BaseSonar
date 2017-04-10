@@ -465,6 +465,12 @@ export default class App extends React.PureComponent {
     }));
   };
 
+  handleIssueChange = (issue: Issue) => {
+    this.setState(state => ({
+      issues: state.issues.map(candidate => candidate.key === issue.key ? issue : candidate)
+    }));
+  };
+
   render() {
     const { component, currentUser } = this.props;
     const { issues, paging, query } = this.state;
@@ -527,6 +533,7 @@ export default class App extends React.PureComponent {
                 <IssuesSourceViewer
                   openIssue={openIssue}
                   loadIssues={this.fetchIssuesForComponent}
+                  onIssueChange={this.handleIssueChange}
                   onIssueSelect={this.openIssue}
                 />}
 
@@ -535,6 +542,7 @@ export default class App extends React.PureComponent {
                   checked={this.state.checked}
                   component={component}
                   issues={issues}
+                  onIssueChange={this.handleIssueChange}
                   onIssueCheck={currentUser.isLoggedIn ? this.handleIssueCheck : undefined}
                   onIssueClick={this.openIssue}
                   selectedIssue={selectedIssue}

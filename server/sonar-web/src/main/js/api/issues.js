@@ -41,15 +41,6 @@ type IssuesResponse = {
   users?: Array<*>
 };
 
-export type Transition =
-  | 'confirm'
-  | 'unconfirm'
-  | 'reopen'
-  | 'resolve'
-  | 'falsepositive'
-  | 'wontfix'
-  | 'close';
-
 export const searchIssues = (query: {}): Promise<IssuesResponse> =>
   getJSON('/api/issues/search', query);
 
@@ -144,7 +135,7 @@ export function setIssueTags(data: { issue: string, tags: string }): Promise<Iss
 }
 
 export function setIssueTransition(
-  data: { issue: string, transition: Transition }
+  data: { issue: string, transition: string }
 ): Promise<IssueResponse> {
   const url = '/api/issues/do_transition';
   return postJSON(url, data);

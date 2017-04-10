@@ -20,9 +20,14 @@
 // @flow
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import type { Dispatch } from 'redux';
 import App from './App';
-import { fetchIssues } from '../actions';
+import { onFail } from '../../../store/rootActions';
 import { getComponent, getCurrentUser } from '../../../store/rootReducer';
+import { searchIssues } from '../../../api/issues';
+import { parseIssueFromResponse } from '../../../helpers/issues';
+
+type Query = { [string]: string };
 
 const mapStateToProps = (state, ownProps) => ({
   component: ownProps.location.query.id
@@ -30,6 +35,17 @@ const mapStateToProps = (state, ownProps) => ({
     : undefined,
   currentUser: getCurrentUser(state)
 });
+
+const fetchIssues = (query: Query) =>
+  (dispatch: Dispatch<*>) =>
+    searchIssues({ ...query, additionalFields: '_all' }).then(
+      response => {
+        const parsedIssues = response.issues.map(issue =>
+          parseIssueFromResponse(issue, response.components, response.users, response.rules));
+        return { ...response, issues: parsedIssues };
+      },
+      onFail(dispatch)
+    );
 
 const mapDispatchToProps = { fetchIssues };
 

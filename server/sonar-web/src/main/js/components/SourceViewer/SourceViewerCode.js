@@ -39,7 +39,7 @@ const ZERO_LINE = {
 };
 
 export default class SourceViewerCode extends React.PureComponent {
-  props: {
+  props: {|
     displayAllIssues: boolean,
     duplications?: Array<Duplication>,
     duplicationsByLine: { [number]: Array<number> },
@@ -50,7 +50,7 @@ export default class SourceViewerCode extends React.PureComponent {
     highlightedLine: number | null,
     highlightedSymbol: string | null,
     issues: Array<Issue>,
-    issuesByLine: { [number]: Array<string> },
+    issuesByLine: { [number]: Array<Issue> },
     issueLocationsByLine: { [number]: Array<LinearIssueLocation> },
     issueSecondaryLocationsByIssueByLine: IndexedIssueLocationsByIssueAndLine,
     issueSecondaryLocationMessagesByIssueByLine: IndexedIssueLocationMessagesByIssueAndLine,
@@ -61,6 +61,7 @@ export default class SourceViewerCode extends React.PureComponent {
     loadingSourcesBefore: boolean,
     onCoverageClick: (SourceLine, HTMLElement) => void,
     onDuplicationClick: (number, number) => void,
+    onIssueChange: (Issue) => void,
     onIssueSelect: (string) => void,
     onIssueUnselect: () => void,
     onIssuesOpen: (SourceLine) => void,
@@ -74,13 +75,13 @@ export default class SourceViewerCode extends React.PureComponent {
     selectedIssueLocation: IndexedIssueLocation | null,
     sources: Array<SourceLine>,
     symbolsByLine: { [number]: Array<string> }
-  };
+  |};
 
   getDuplicationsForLine(line: SourceLine) {
     return this.props.duplicationsByLine[line.line] || EMPTY_ARRAY;
   }
 
-  getIssuesForLine(line: SourceLine): Array<string> {
+  getIssuesForLine(line: SourceLine): Array<Issue> {
     return this.props.issuesByLine[line.line] || EMPTY_ARRAY;
   }
 
@@ -133,7 +134,8 @@ export default class SourceViewerCode extends React.PureComponent {
       ? highlightedSymbol
       : null;
 
-    const optimizedSelectedIssue = selectedIssue != null && issuesForLine.includes(selectedIssue)
+    const optimizedSelectedIssue = selectedIssue != null &&
+      issuesForLine.find(issue => issue.key === selectedIssue)
       ? selectedIssue
       : null;
 
@@ -167,6 +169,7 @@ export default class SourceViewerCode extends React.PureComponent {
         onClick={this.props.onLineClick}
         onCoverageClick={this.props.onCoverageClick}
         onDuplicationClick={this.props.onDuplicationClick}
+        onIssueChange={this.props.onIssueChange}
         onIssueSelect={this.props.onIssueSelect}
         onIssueUnselect={this.props.onIssueUnselect}
         onIssuesOpen={this.props.onIssuesOpen}

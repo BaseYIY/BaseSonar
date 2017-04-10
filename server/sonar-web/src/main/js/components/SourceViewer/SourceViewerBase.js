@@ -70,10 +70,10 @@ type Props = {
   loadIssues: (string, number, number) => Promise<*>,
   loadSources: (string, number, number) => Promise<*>,
   onLoaded?: (component: Object, sources: Array<*>, issues: Array<*>) => void,
+  onIssueChange?: (Issue) => void,
   onIssueSelect?: (string) => void,
   onIssueUnselect?: () => void,
   onReceiveComponent: ({ canMarkAsFavorite: boolean, fav: boolean, key: string }) => void,
-  onReceiveIssues: (issues: Array<*>) => void,
   selectedIssue?: string
 };
 
@@ -93,7 +93,7 @@ type State = {
   highlightedLine: number | null,
   highlightedSymbol: string | null,
   issues?: Array<Issue>,
-  issuesByLine: { [number]: Array<string> },
+  issuesByLine: { [number]: Array<Issue> },
   issueLocationsByLine: { [number]: Array<LinearIssueLocation> },
   issueSecondaryLocationsByIssueByLine: IndexedIssueLocationsByIssueAndLine,
   issueSecondaryLocationMessagesByIssueByLine: IndexedIssueLocationMessagesByIssueAndLine,
@@ -222,7 +222,6 @@ export default class SourceViewerBase extends React.Component {
   fetchComponent() {
     const loadIssues = (component, sources) => {
       this.props.loadIssues(this.props.component, 1, LINES).then(issues => {
-        this.props.onReceiveIssues(issues);
         if (this.mounted) {
           const finalSources = sources.slice(0, LINES);
           this.setState(
@@ -327,7 +326,6 @@ export default class SourceViewerBase extends React.Component {
     const from = Math.max(1, firstSourceLine.line - LINES);
     this.props.loadSources(this.props.component, from, firstSourceLine.line - 1).then(sources => {
       this.props.loadIssues(this.props.component, from, firstSourceLine.line - 1).then(issues => {
-        this.props.onReceiveIssues(issues);
         if (this.mounted) {
           this.setState(prevState => ({
             issues: uniqBy([...issues, ...prevState.issues], issue => issue.key),
@@ -351,7 +349,6 @@ export default class SourceViewerBase extends React.Component {
     const toLine = lastSourceLine.line + LINES + 1;
     this.props.loadSources(this.props.component, fromLine, toLine).then(sources => {
       this.props.loadIssues(this.props.component, fromLine, toLine).then(issues => {
-        this.props.onReceiveIssues(issues);
         if (this.mounted) {
           this.setState(prevState => ({
             issues: uniqBy([...prevState.issues, ...issues], issue => issue.key),
@@ -530,6 +527,16 @@ export default class SourceViewerBase extends React.Component {
     }));
   };
 
+  handleIssueChange = (issue: Issue) => {
+    this.setState(state => {
+      const issues = state.issues.map(candidate => candidate.key === issue.key ? issue : candidate);
+      return { issues, issuesByLine: issuesByLine(issues) };
+    });
+    if (this.props.onIssueChange) {
+      this.props.onIssueChange(issue);
+    }
+  };
+
   renderCode(sources: Array<SourceLine>) {
     const hasSourcesBefore = sources.length > 0 && sources[0].line > 1;
     return (
@@ -557,6 +564,7 @@ export default class SourceViewerBase extends React.Component {
         loadingSourcesBefore={this.state.loadingSourcesBefore}
         onCoverageClick={this.handleCoverageClick}
         onDuplicationClick={this.handleDuplicationClick}
+        onIssueChange={this.handleIssueChange}
         onIssueSelect={this.handleIssueSelect}
         onIssueUnselect={this.handleIssueUnselect}
         onIssuesOpen={this.handleOpenIssues}

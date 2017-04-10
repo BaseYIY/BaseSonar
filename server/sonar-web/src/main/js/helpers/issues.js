@@ -20,6 +20,7 @@
 // @flow
 import { sortBy } from 'lodash';
 import { SEVERITIES } from './constants';
+import type { Issue } from '../components/issue/types';
 
 type TextRange = {
   startLine: number,
@@ -110,11 +111,11 @@ const ensureTextRange = (issue: RawIssue) => {
 };
 
 export const parseIssueFromResponse = (
-  issue: RawIssue,
+  issue: Object,
   components?: Array<*>,
   users?: Array<*>,
   rules?: Array<*>
-) => {
+): Issue => {
   return {
     ...issue,
     ...injectRelational(issue, components, 'component', 'key'),
