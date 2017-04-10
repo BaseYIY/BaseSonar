@@ -20,7 +20,7 @@
 // @flow
 import { isNil, omitBy } from 'lodash';
 
-type RawQuery = { [string]: string };
+export type RawQuery = { [string]: string };
 
 export type Query = {|
   assigned: boolean,

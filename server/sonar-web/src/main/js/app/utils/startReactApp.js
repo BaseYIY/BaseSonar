@@ -88,9 +88,8 @@ const startReactApp = () => {
       <Router history={history} onUpdate={handleUpdate}>
         <Route
           path="/account/issues"
-          onEnter={() => {
-            const defaultFilter = window.location.hash || '#resolve=false';
-            window.location = `${window.baseUrl}/issues${defaultFilter}|assigned_to_me=true`;
+          onEnter={(_, replace) => {
+            replace({ pathname: '/issues', query: { myIssues: 'true', resolved: 'false' } });
           }}
         />
 
@@ -116,6 +115,7 @@ const startReactApp = () => {
         />
 
         <Redirect from="/component/index" to="/component" />
+        <Redirect from="/component_issues" to="/project/issues" />
         <Redirect from="/dashboard/index" to="/dashboard" />
         <Redirect from="/governance" to="/view" />
         <Redirect from="/extension/governance/portfolios" to="/portfolios" />

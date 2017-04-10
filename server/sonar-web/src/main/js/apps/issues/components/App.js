@@ -61,7 +61,6 @@ import type { Issue } from '../../../components/issue/types';
 // TODO issue permalink
 // TODO request facets on demand
 // TODO reload button
-// TODO redirect from old-style urls
 // TODO no results
 // TODO issues/debt display mode
 // TODO sticky header

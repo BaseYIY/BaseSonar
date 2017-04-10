@@ -19,6 +19,7 @@
  */
 // @flow
 import React from 'react';
+import { Link } from 'react-router';
 import IssueChangelog from './IssueChangelog';
 import IssueMessage from './IssueMessage';
 import { getSingleIssueUrl } from '../../../helpers/urls';
@@ -66,10 +67,10 @@ export default function IssueTitleBar(props: Props) {
                   </span>
                 </li>}
               <li className="issue-meta">
-                <a
+                <Link
                   className="js-issue-permalink icon-link"
-                  href={getSingleIssueUrl(issue.key)}
-                  target="_blank"
+                  onClick={(e: Event) => e.stopPropagation()}
+                  to={getSingleIssueUrl(issue.key)}
                 />
               </li>
               {hasSimilarIssuesFilter &&

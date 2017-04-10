@@ -37,31 +37,16 @@ export function getProjectUrl(key) {
 
 /**
  * Generate URL for a global issues page
- * @param {object} query
- * @returns {string}
  */
 export function getIssuesUrl(query) {
-  const serializedQuery = Object.keys(query)
-    .map(criterion => `${encodeURIComponent(criterion)}=${encodeURIComponent(query[criterion])}`)
-    .join('|');
-
-  // return a string (not { pathname }) to help react-router's Link handle this properly
-  return '/issues#' + serializedQuery;
+  return { pathname: '/issues', query };
 }
 
 /**
  * Generate URL for a component's issues page
- * @param {string} componentKey
- * @param {object} query
- * @returns {string}
  */
 export function getComponentIssuesUrl(componentKey, query) {
-  const serializedQuery = Object.keys(query)
-    .map(criterion => `${encodeURIComponent(criterion)}=${encodeURIComponent(query[criterion])}`)
-    .join('|');
-
-  // return a string (not { pathname }) to help react-router's Link handle this properly
-  return '/component_issues?id=' + encodeURIComponent(componentKey) + '#' + serializedQuery;
+  return { pathname: '/project/issues', query: { ...query, id: componentKey } };
 }
 
 /**
@@ -69,8 +54,8 @@ export function getComponentIssuesUrl(componentKey, query) {
  * @param {string} issueKey
  * @returns {string}
  */
-export function getSingleIssueUrl(issueKey) {
-  return window.baseUrl + '/issues/search#issues=' + issueKey;
+export function getSingleIssueUrl(issue) {
+  return { pathname: '/issues', query: { issue } };
 }
 
 /**
