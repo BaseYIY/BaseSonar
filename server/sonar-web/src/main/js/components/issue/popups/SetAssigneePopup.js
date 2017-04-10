@@ -67,14 +67,17 @@ export default class SetAssigneePopup extends React.PureComponent {
     this.organizationEnabled = areThereCustomOrganizations();
     this.searchUsers = debounce(this.searchUsers, 250);
     this.searchMembers = debounce(this.searchMembers, 250);
-    this.defaultUsersArray = [
-      getCurrentUserFromStore(),
-      { login: '', name: translate('unassigned') }
-    ];
+    this.defaultUsersArray = [{ login: '', name: translate('unassigned') }];
+
+    const currentUser = getCurrentUserFromStore();
+    if (currentUser != null) {
+      this.defaultUsersArray = [currentUser, ...this.defaultUsersArray];
+    }
+
     this.state = {
       query: '',
       users: this.defaultUsersArray,
-      currentUser: this.defaultUsersArray[0].login
+      currentUser: currentUser.login
     };
   }
 

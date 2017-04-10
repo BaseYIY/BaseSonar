@@ -22,10 +22,8 @@ import React from 'react';
 import { debounce, without } from 'lodash';
 import TagsSelector from '../../../components/tags/TagsSelector';
 import { searchIssueTags } from '../../../api/issues';
-import type { Issue } from '../types';
 
 type Props = {
-  issue: Issue,
   popupPosition?: {},
   onFail: (Error) => void,
   selectedTags: Array<string>,

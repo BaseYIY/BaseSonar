@@ -53,11 +53,7 @@ export default class IssueTransition extends React.PureComponent {
           position="bottomleft"
           togglePopup={this.toggleSetTransition}
           popup={
-            <SetTransitionPopup
-              issue={issue}
-              transitions={issue.transitions}
-              onSelect={this.setTransition}
-            />
+            <SetTransitionPopup transitions={issue.transitions} onSelect={this.setTransition} />
           }>
           <button
             className="button-link issue-action issue-action-with-options js-issue-transition"

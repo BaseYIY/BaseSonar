@@ -41,9 +41,9 @@ export default class IssueMessage extends React.PureComponent {
   render() {
     return (
       <div className="issue-message">
-        {this.props.message}{' '}
+        {this.props.message}
         <button
-          className="button-link issue-rule icon-ellipsis-h"
+          className="button-link issue-rule icon-ellipsis-h little-spacer-left"
           aria-label={translate('issue.rule_details')}
           onClick={this.handleClick}
         />

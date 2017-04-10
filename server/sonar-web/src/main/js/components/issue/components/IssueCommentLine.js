@@ -109,7 +109,7 @@ export default class IssueCommentLine extends React.PureComponent {
               offset={{ vertical: 0, horizontal: -10 }}
               position="bottomright"
               togglePopup={this.toggleDeletePopup}
-              popup={<CommentDeletePopup comment={comment} onDelete={this.handleDelete} />}>
+              popup={<CommentDeletePopup onDelete={this.handleDelete} />}>
               <button
                 className="js-issue-comment-delete button-link icon-delete icon-half-transparent"
                 onClick={this.toggleDeletePopup}

@@ -17,23 +17,28 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-// @flow
+import { shallow } from 'enzyme';
 import React from 'react';
-import { translate } from '../../../helpers/l10n';
-import BubblePopup from '../../../components/common/BubblePopup';
+import SelectListItem from '../SelectListItem';
 
-type Props = {
-  onDelete: () => void,
-  popupPosition?: {}
-};
+it('should render correctly without children', () => {
+  expect(shallow(<SelectListItem item="myitem" />)).toMatchSnapshot();
+});
 
-export default function CommentDeletePopup(props: Props) {
-  return (
-    <BubblePopup position={props.popupPosition} customClass="bubble-popup-bottom-right">
-      <div className="text-right">
-        <div className="spacer-bottom">{translate('issue.comment.delete_confirm_message')}</div>
-        <button className="button-red" onClick={props.onDelete}>{translate('delete')}</button>
-      </div>
-    </BubblePopup>
-  );
-}
+it('should render correctly with children', () => {
+  expect(
+    shallow(
+      <SelectListItem active="myitem" item="seconditem">
+        <i className="custom-icon" /><p>seconditem</p>
+      </SelectListItem>
+    )
+  ).toMatchSnapshot();
+});
+
+it('should render correctly with a tooltip', () => {
+  expect(shallow(<SelectListItem item="myitem" title="my custom tooltip" />)).toMatchSnapshot();
+});
+
+it('should render with the active class', () => {
+  expect(shallow(<SelectListItem active="myitem" item="myitem" />)).toMatchSnapshot();
+});

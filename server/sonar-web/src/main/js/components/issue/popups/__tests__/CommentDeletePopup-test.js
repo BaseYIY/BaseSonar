@@ -17,23 +17,15 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-// @flow
+import { shallow } from 'enzyme';
 import React from 'react';
-import { translate } from '../../../helpers/l10n';
-import BubblePopup from '../../../components/common/BubblePopup';
+import CommentDeletePopup from '../CommentDeletePopup';
+import { click } from '../../../../helpers/testUtils';
 
-type Props = {
-  onDelete: () => void,
-  popupPosition?: {}
-};
-
-export default function CommentDeletePopup(props: Props) {
-  return (
-    <BubblePopup position={props.popupPosition} customClass="bubble-popup-bottom-right">
-      <div className="text-right">
-        <div className="spacer-bottom">{translate('issue.comment.delete_confirm_message')}</div>
-        <button className="button-red" onClick={props.onDelete}>{translate('delete')}</button>
-      </div>
-    </BubblePopup>
-  );
-}
+it('should render the comment delete popup correctly', () => {
+  const onDelete = jest.fn();
+  const element = shallow(<CommentDeletePopup onDelete={onDelete} />);
+  expect(element).toMatchSnapshot();
+  click(element.find('button'));
+  expect(onDelete.mock.calls.length).toBe(1);
+});

@@ -63,7 +63,6 @@ export default class IssueTags extends React.PureComponent {
           togglePopup={this.toggleSetTags}
           popup={
             <SetIssueTagsPopup
-              issue={issue}
               onFail={this.props.onFail}
               selectedTags={issue.tags}
               setTags={this.setTags}

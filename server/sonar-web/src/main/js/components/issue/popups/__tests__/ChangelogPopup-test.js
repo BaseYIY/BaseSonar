@@ -17,23 +17,30 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-// @flow
+import { shallow } from 'enzyme';
 import React from 'react';
-import { translate } from '../../../helpers/l10n';
-import BubblePopup from '../../../components/common/BubblePopup';
+import ChangelogPopup from '../ChangelogPopup';
 
-type Props = {
-  onDelete: () => void,
-  popupPosition?: {}
-};
-
-export default function CommentDeletePopup(props: Props) {
-  return (
-    <BubblePopup position={props.popupPosition} customClass="bubble-popup-bottom-right">
-      <div className="text-right">
-        <div className="spacer-bottom">{translate('issue.comment.delete_confirm_message')}</div>
-        <button className="button-red" onClick={props.onDelete}>{translate('delete')}</button>
-      </div>
-    </BubblePopup>
+it('should render the changelog popup correctly', () => {
+  const element = shallow(
+    <ChangelogPopup
+      issue={{
+        key: 'issuekey',
+        author: 'john.david.dalton@gmail.com',
+        creationDate: '2017-03-01T09:36:01+0100'
+      }}
+      onFail={jest.fn()}
+    />
   );
-}
+  element.setState({
+    changelogs: [
+      {
+        creationDate: '2017-03-01T09:36:01+0100',
+        userName: 'john.doe',
+        avatar: 'gravatarhash',
+        diffs: [{ key: 'severity', newValue: 'MINOR', oldValue: 'CRITICAL' }]
+      }
+    ]
+  });
+  expect(element).toMatchSnapshot();
+});

@@ -17,23 +17,17 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-// @flow
+import { shallow } from 'enzyme';
 import React from 'react';
-import { translate } from '../../../helpers/l10n';
-import BubblePopup from '../../../components/common/BubblePopup';
+import IssueMessage from '../IssueMessage';
 
-type Props = {
-  onDelete: () => void,
-  popupPosition?: {}
-};
-
-export default function CommentDeletePopup(props: Props) {
-  return (
-    <BubblePopup position={props.popupPosition} customClass="bubble-popup-bottom-right">
-      <div className="text-right">
-        <div className="spacer-bottom">{translate('issue.comment.delete_confirm_message')}</div>
-        <button className="button-red" onClick={props.onDelete}>{translate('delete')}</button>
-      </div>
-    </BubblePopup>
+it('should render with the message and a link to open the rule', () => {
+  const element = shallow(
+    <IssueMessage
+      rule="javascript:S1067"
+      message="Reduce the number of conditional operators (4) used in the expression"
+      organization="myorg"
+    />
   );
-}
+  expect(element).toMatchSnapshot();
+});

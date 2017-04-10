@@ -46,7 +46,6 @@ export default class SelectList extends React.PureComponent {
 
   componentDidMount() {
     this.list.focus();
-    this.list.addEventListener('keydown', this.handleKeyboard, false);
   }
 
   componentWillReceiveProps(nextProps: Props) {
@@ -56,10 +55,6 @@ export default class SelectList extends React.PureComponent {
     ) {
       this.setState({ active: nextProps.currentItem });
     }
-  }
-
-  componentWillUnmount() {
-    this.list.removeEventListener('keydown', this.handleKeyboard);
   }
 
   handleKeyboard = (evt: KeyboardEvent) => {
@@ -110,7 +105,11 @@ export default class SelectList extends React.PureComponent {
     const { children } = this.props;
     const hasChildren = React.Children.count(children) > 0;
     return (
-      <ul className="menu" ref={list => this.list = list} tabIndex={0}>
+      <ul
+        className="menu"
+        onKeyDown={this.handleKeyboard}
+        ref={list => this.list = list}
+        tabIndex={0}>
         {hasChildren &&
           React.Children.map(children, child =>
             React.cloneElement(child, {

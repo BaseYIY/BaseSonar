@@ -23,10 +23,8 @@ import BubblePopup from '../../../components/common/BubblePopup';
 import SelectList from '../../../components/common/SelectList';
 import SelectListItem from '../../../components/common/SelectListItem';
 import { translate } from '../../../helpers/l10n';
-import type { Issue } from '../types';
 
 type Props = {
-  issue: Issue,
   transitions: Array<string>,
   onSelect: (string) => void,
   popupPosition?: {}
@@ -36,15 +34,13 @@ export default class SetTransitionPopup extends React.PureComponent {
   props: Props;
 
   render() {
+    const { transitions } = this.props;
     return (
       <BubblePopup
         position={this.props.popupPosition}
         customClass="bubble-popup-menu bubble-popup-bottom">
-        <SelectList
-          items={this.props.transitions}
-          currentItem={this.props.transitions[0]}
-          onSelect={this.props.onSelect}>
-          {this.props.transitions.map(transition => {
+        <SelectList items={transitions} currentItem={transitions[0]} onSelect={this.props.onSelect}>
+          {transitions.map(transition => {
             return (
               <SelectListItem
                 key={transition}

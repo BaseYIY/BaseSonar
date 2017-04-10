@@ -17,23 +17,11 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-// @flow
+import { shallow } from 'enzyme';
 import React from 'react';
-import { translate } from '../../../helpers/l10n';
-import BubblePopup from '../../../components/common/BubblePopup';
+import SetTypePopup from '../SetTypePopup';
 
-type Props = {
-  onDelete: () => void,
-  popupPosition?: {}
-};
-
-export default function CommentDeletePopup(props: Props) {
-  return (
-    <BubblePopup position={props.popupPosition} customClass="bubble-popup-bottom-right">
-      <div className="text-right">
-        <div className="spacer-bottom">{translate('issue.comment.delete_confirm_message')}</div>
-        <button className="button-red" onClick={props.onDelete}>{translate('delete')}</button>
-      </div>
-    </BubblePopup>
-  );
-}
+it('should render tags popup correctly', () => {
+  const element = shallow(<SetTypePopup issue={{ type: 'BUG' }} onSelect={jest.fn()} />);
+  expect(element).toMatchSnapshot();
+});

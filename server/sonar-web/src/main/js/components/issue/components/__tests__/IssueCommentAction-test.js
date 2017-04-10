@@ -17,23 +17,37 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-// @flow
+import { shallow } from 'enzyme';
 import React from 'react';
-import { translate } from '../../../helpers/l10n';
-import BubblePopup from '../../../components/common/BubblePopup';
+import IssueCommentAction from '../IssueCommentAction';
+import { click } from '../../../../helpers/testUtils';
 
-type Props = {
-  onDelete: () => void,
-  popupPosition?: {}
-};
-
-export default function CommentDeletePopup(props: Props) {
-  return (
-    <BubblePopup position={props.popupPosition} customClass="bubble-popup-bottom-right">
-      <div className="text-right">
-        <div className="spacer-bottom">{translate('issue.comment.delete_confirm_message')}</div>
-        <button className="button-red" onClick={props.onDelete}>{translate('delete')}</button>
-      </div>
-    </BubblePopup>
+it('should render correctly', () => {
+  const element = shallow(
+    <IssueCommentAction
+      issueKey="issue-key"
+      currentPopup=""
+      onFail={jest.fn()}
+      onIssueChange={jest.fn()}
+      toggleComment={jest.fn()}
+    />
   );
-}
+  expect(element).toMatchSnapshot();
+});
+
+it('should open the popup when the button is clicked', () => {
+  const toggle = jest.fn();
+  const element = shallow(
+    <IssueCommentAction
+      issueKey="issue-key"
+      currentPopup=""
+      onFail={jest.fn()}
+      onIssueChange={jest.fn()}
+      toggleComment={toggle}
+    />
+  );
+  click(element.find('button'));
+  expect(toggle.mock.calls.length).toBe(1);
+  element.setProps({ currentPopup: 'comment' });
+  expect(element).toMatchSnapshot();
+});
