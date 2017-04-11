@@ -58,7 +58,6 @@ import { translate, translateWithParameters } from '../../../helpers/l10n';
 import { scrollToElement } from '../../../helpers/scrolling';
 import type { Issue } from '../../../components/issue/types';
 
-// TODO request facets on demand
 // TODO reload button
 // TODO no results
 // TODO issues/debt display mode
@@ -277,7 +276,7 @@ export default class App extends React.PureComponent {
     }
   };
 
-  fetchIssues = (additional?: {}): Promise<*> => {
+  fetchIssues = (additional?: {}, requestFacets?: boolean = false): Promise<*> => {
     const { component } = this.props;
     const { myIssues, query } = this.state;
 
@@ -286,22 +285,24 @@ export default class App extends React.PureComponent {
       ...serializeQuery(query),
       s: 'FILE_LINE',
       ps: 25,
-      facets: [
-        'assignees',
-        'authors',
-        'createdAt',
-        'directories',
-        'fileUuids',
-        'languages',
-        'moduleUuids',
-        'projectUuids',
-        'resolutions',
-        'rules',
-        'severities',
-        'statuses',
-        'tags',
-        'types'
-      ].join(),
+      facets: requestFacets
+        ? [
+            'assignees',
+            'authors',
+            'createdAt',
+            'directories',
+            'fileUuids',
+            'languages',
+            'moduleUuids',
+            'projectUuids',
+            'resolutions',
+            'rules',
+            'severities',
+            'statuses',
+            'tags',
+            'types'
+          ].join()
+        : undefined,
       ...additional
     };
 
@@ -314,7 +315,7 @@ export default class App extends React.PureComponent {
 
   fetchFirstIssues() {
     this.setState({ loading: true });
-    this.fetchIssues().then(({ facets, issues, paging, ...other }) => {
+    this.fetchIssues({}, true).then(({ facets, issues, paging, ...other }) => {
       if (this.mounted) {
         const open = getOpen(this.props.location.query);
         this.setState({
