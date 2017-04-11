@@ -29,6 +29,7 @@ const issue = {
   creationDate: '2017-03-01T09:36:01+0100'
 };
 
+moment.fn.format = jest.fn(() => 'March 1, 2017 9:36 AM');
 moment.fn.fromNow = jest.fn(() => 'a month ago');
 
 it('should render correctly', () => {
