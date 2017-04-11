@@ -34,6 +34,8 @@ type Props = {
   togglePopup: (string) => void
 };
 
+const stopPropagation = (event: Event) => event.stopPropagation();
+
 export default function IssueTitleBar(props: Props) {
   const { issue } = props;
   const hasSimilarIssuesFilter = props.onFilterClick != null;
@@ -69,7 +71,7 @@ export default function IssueTitleBar(props: Props) {
               <li className="issue-meta">
                 <Link
                   className="js-issue-permalink icon-link"
-                  onClick={(e: Event) => e.stopPropagation()}
+                  onClick={stopPropagation}
                   to={getSingleIssueUrl(issue.key)}
                 />
               </li>
