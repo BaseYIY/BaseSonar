@@ -517,7 +517,7 @@ export default class App extends React.PureComponent {
       <div className="pull-left">
         {checked.length > 0
           ? <div className="dropdown">
-              <button data-toggle="dropdown">
+              <button id="issues-bulk-change" data-toggle="dropdown">
                 {translate('bulk_change')}
                 <i className="icon-dropdown little-spacer-left" />
               </button>
@@ -534,7 +534,7 @@ export default class App extends React.PureComponent {
                 </li>
               </ul>
             </div>
-          : <button onClick={this.handleBulkChangeClick}>
+          : <button id="issues-bulk-change" onClick={this.handleBulkChangeClick}>
               {translate('bulk_change')}
             </button>}
         {bulkChange != null &&

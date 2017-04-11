@@ -247,7 +247,7 @@ export default class BulkChangeModal extends React.PureComponent {
   );
 
   renderField = (field: string, label: string, affected: ?number, input: Object) => (
-    <div className="modal-field">
+    <div className="modal-field" id={`issues-bulk-change-${field}`}>
       <label htmlFor={field}>{translate(label)}</label>
       {this.renderCheckbox(field)}
       {input}
