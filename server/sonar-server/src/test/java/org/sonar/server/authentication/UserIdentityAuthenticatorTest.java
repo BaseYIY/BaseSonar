@@ -36,6 +36,7 @@ import org.sonar.db.user.UserDto;
 import org.sonar.server.organization.DefaultOrganizationProvider;
 import org.sonar.server.organization.OrganizationCreation;
 import org.sonar.server.organization.TestDefaultOrganizationProvider;
+import org.sonar.server.organization.TestOrganizationFlags;
 import org.sonar.server.user.NewUserNotifier;
 import org.sonar.server.user.UserUpdater;
 import org.sonar.server.user.index.UserIndexer;
@@ -75,11 +76,14 @@ public class UserIdentityAuthenticatorTest {
 
   private DefaultOrganizationProvider defaultOrganizationProvider = TestDefaultOrganizationProvider.from(db);
   private OrganizationCreation organizationCreation = mock(OrganizationCreation.class);
+  private TestOrganizationFlags organizationFlags = TestOrganizationFlags.standalone();
+
   private UserUpdater userUpdater = new UserUpdater(
     mock(NewUserNotifier.class),
     db.getDbClient(),
     mock(UserIndexer.class),
     System2.INSTANCE,
+    organizationFlags,
     defaultOrganizationProvider,
     organizationCreation,
     new DefaultGroupFinder(db.getDbClient()));
@@ -116,6 +120,31 @@ public class UserIdentityAuthenticatorTest {
 
     Optional<UserDto> user = db.users().selectUserByLogin(USER_LOGIN);
     checkGroupMembership(user.get(), group1, group2, defaultGroup);
+  }
+
+  @Test
+  public void authenticate_new_user_and_force_default_group() throws Exception {
+    UserDto user = db.users().insertUser();
+    GroupDto group1 = db.users().insertGroup(db.getDefaultOrganization(), "group1");
+    db.users().insertMember(group1, user);
+    db.users().insertMember(defaultGroup, user);
+    db.organizations().addMember(db.getDefaultOrganization(), user);
+
+    authenticate(user.getLogin(), "group1");
+
+    checkGroupMembership(user, group1, defaultGroup);
+  }
+
+  @Test
+  public void does_not_force_default_group_when_authenticating_new_user_if_not_member_of_default_organization() throws Exception {
+    UserDto user = db.users().insertUser();
+    GroupDto group1 = db.users().insertGroup(db.getDefaultOrganization(), "group1");
+    db.users().insertMember(group1, user);
+    db.users().insertMember(defaultGroup, user);
+
+    authenticate(user.getLogin(), "group1");
+
+    checkGroupMembership(user, group1);
   }
 
   @Test
@@ -169,6 +198,7 @@ public class UserIdentityAuthenticatorTest {
     GroupDto group1 = db.users().insertGroup(db.getDefaultOrganization(), "group1");
     GroupDto group2 = db.users().insertGroup(db.getDefaultOrganization(), "group2");
     db.users().insertMember(defaultGroup, user);
+    db.organizations().addMember(db.getDefaultOrganization(), user);
 
     authenticate(USER_LOGIN, "group1", "group2", "group3");
 
@@ -186,6 +216,7 @@ public class UserIdentityAuthenticatorTest {
     db.users().insertMember(group1, user);
     db.users().insertMember(group2, user);
     db.users().insertMember(defaultGroup, user);
+    db.organizations().addMember(db.getDefaultOrganization(), user);
 
     authenticate(USER_LOGIN, "group1");
 
@@ -200,10 +231,23 @@ public class UserIdentityAuthenticatorTest {
     db.users().insertMember(group1, user);
     db.users().insertMember(group2, user);
     db.users().insertMember(defaultGroup, user);
+    db.organizations().addMember(db.getDefaultOrganization(), user);
 
     authenticate(user.getLogin());
 
     checkGroupMembership(user, defaultGroup);
+  }
+
+  @Test
+  public void does_not_force_default_group_when_authenticating_existing_user_if_not_member_of_default_organization() throws Exception {
+    UserDto user = db.users().insertUser();
+    GroupDto group1 = db.users().insertGroup(db.getDefaultOrganization(), "group1");
+    db.users().insertMember(group1, user);
+    db.users().insertMember(defaultGroup, user);
+
+    authenticate(user.getLogin(), "group1");
+
+    checkGroupMembership(user, group1);
   }
 
   @Test
@@ -214,6 +258,7 @@ public class UserIdentityAuthenticatorTest {
       .setActive(true)
       .setName("John"));
     db.users().insertMember(defaultGroup, user);
+    db.organizations().addMember(db.getDefaultOrganization(), user);
     String groupName = "a-group";
     GroupDto groupInDefaultOrg = db.users().insertGroup(db.getDefaultOrganization(), groupName);
     GroupDto groupInOrg = db.users().insertGroup(org, groupName);
