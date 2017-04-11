@@ -19,28 +19,88 @@
  */
 // @flow
 import React from 'react';
-import { css } from 'glamor';
+import { css, media } from 'glamor';
 import { clearfix } from 'glamor/utils';
+import { throttle } from 'lodash';
 
 type Props = {|
   border: boolean,
-  children?: React.Element<*>
+  children?: React.Element<*>,
+  top?: number
 |};
 
-const HeaderPanel = (props: Props) => (
-  <div
-    className={css(clearfix(), {
+type State = {
+  scrolled: boolean
+};
+
+export default class HeaderPanel extends React.PureComponent {
+  props: Props;
+  state: State;
+
+  constructor(props: Props) {
+    super(props);
+    this.state = { scrolled: this.isScrolled() };
+    this.handleScroll = throttle(this.handleScroll, 50);
+  }
+
+  componentDidMount() {
+    if (this.props.top != null) {
+      window.addEventListener('scroll', this.handleScroll);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.top != null) {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
+  }
+
+  isScrolled = () => window.scrollY > 10;
+
+  handleScroll = () => {
+    this.setState({ scrolled: this.isScrolled() });
+  };
+
+  render() {
+    const commonStyles = {
       height: 56,
       lineHeight: '24px',
-      margin: '-20px -20px 20px',
       padding: '16px 20px',
-      borderBottom: props.border ? '1px solid #e6e6e6' : undefined,
       boxSizing: 'border-box',
-      backgroundColor: '#f3f3f3',
-      '& .component-name': { lineHeight: '24px' }
-    })}>
-    {props.children}
-  </div>
-);
+      borderBottom: this.props.border ? '1px solid #e6e6e6' : undefined,
+      backgroundColor: '#f3f3f3'
+    };
 
-export default HeaderPanel;
+    const inner = this.props.top
+      ? <div
+          className={css(
+            commonStyles,
+            {
+              position: 'fixed',
+              zIndex: 30,
+              top: this.props.top,
+              left: 'calc(50vw - 360px + 1px)',
+              right: 0,
+              boxShadow: this.state.scrolled ? '0 2px 4px rgba(0, 0, 0, .125)' : 'none',
+              transition: 'box-shadow 0.3s ease'
+            },
+            media('(max-width: 1320px)', { left: 301 })
+          )}>
+          {this.props.children}
+        </div>
+      : this.props.children;
+
+    return (
+      <div
+        className={css(clearfix(), commonStyles, {
+          marginTop: -20,
+          marginBottom: 20,
+          marginLeft: -20,
+          marginRight: -20,
+          '& .component-name': { lineHeight: '24px' }
+        })}>
+        {inner}
+      </div>
+    );
+  }
+}

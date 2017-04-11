@@ -58,13 +58,11 @@ import { translate, translateWithParameters } from '../../../helpers/l10n';
 import { scrollToElement } from '../../../helpers/scrolling';
 import type { Issue } from '../../../components/issue/types';
 
-// TODO bulk change
 // TODO filter similar issues
 // TODO request facets on demand
 // TODO reload button
 // TODO no results
 // TODO issues/debt display mode
-// TODO sticky header
 
 type Props = {
   component?: Component,
@@ -593,7 +591,7 @@ export default class App extends React.PureComponent {
         </PageSide>
 
         <PageMain>
-          <HeaderPanel border={true}>
+          <HeaderPanel border={true} top={top}>
             <PageMainInner>
               {this.renderBulkChange(openIssue)}
               {openIssue != null &&

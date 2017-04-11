@@ -42,6 +42,7 @@ const sideStyles = css(width, {
 
 const sideStickyStyles = css(width, {
   position: 'fixed',
+  zIndex: 40,
   top: 0,
   bottom: 0,
   left: 0,
