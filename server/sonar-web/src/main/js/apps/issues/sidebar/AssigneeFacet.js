@@ -25,10 +25,9 @@ import FacetHeader from './components/FacetHeader';
 import FacetItem from './components/FacetItem';
 import FacetItemsList from './components/FacetItemsList';
 import FacetFooter from './components/FacetFooter';
+import { searchAssignees } from '../utils';
 import type { ReferencedUser, Component } from '../utils';
 import Avatar from '../../../components/ui/Avatar';
-import { searchMembers } from '../../../api/organizations';
-import { searchUsers } from '../../../api/users';
 import { translate } from '../../../helpers/l10n';
 
 type Props = {|
@@ -69,23 +68,7 @@ export default class AssigneeFacet extends React.PureComponent {
     this.props.onToggle(this.property);
   };
 
-  handleSearch = (query: string) => {
-    const { component } = this.props;
-    return component
-      ? searchMembers({ organization: component.organization, ps: 50, q: query }).then(response =>
-          response.users.map(user => ({
-            avatar: user.avatar,
-            label: user.name,
-            value: user.login
-          })))
-      : searchUsers(query, 50).then(response =>
-          response.users.map(user => ({
-            // TODO this WS returns no avatar
-            avatar: user.avatar,
-            label: user.name,
-            value: user.login
-          })));
-  };
+  handleSearch = (query: string) => searchAssignees(query, this.props.component);
 
   handleSelect = (rule: string) => {
     const { assignees } = this.props;

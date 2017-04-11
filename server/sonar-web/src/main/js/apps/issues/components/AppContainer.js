@@ -47,6 +47,8 @@ const fetchIssues = (query: Query) =>
       onFail(dispatch)
     );
 
-const mapDispatchToProps = { fetchIssues };
+const onRequestFail = (error: Error) => (dispatch: Dispatch<*>) => onFail(dispatch)(error);
+
+const mapDispatchToProps = { fetchIssues, onRequestFail };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));

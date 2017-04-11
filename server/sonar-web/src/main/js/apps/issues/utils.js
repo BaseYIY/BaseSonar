@@ -19,6 +19,8 @@
  */
 // @flow
 import { isNil, omitBy } from 'lodash';
+import { searchMembers } from '../../api/organizations';
+import { searchUsers } from '../../api/users';
 
 export type RawQuery = { [string]: string };
 
@@ -196,4 +198,26 @@ export type Component = {
   key: string,
   organization: string,
   qualifier: string
+};
+
+export type CurrentUser =
+  | { isLoggedIn: false }
+  | { isLoggedIn: true, email?: string, login: string, name: string };
+
+export const searchAssignees = (query: string, component?: Component) => {
+  return component
+    ? searchMembers({ organization: component.organization, ps: 50, q: query }).then(response =>
+        response.users.map(user => ({
+          avatar: user.avatar,
+          label: user.name,
+          value: user.login
+        })))
+    : searchUsers(query, 50).then(response =>
+        response.users.map(user => ({
+          // TODO this WS returns no avatar
+          avatar: user.avatar,
+          email: user.email,
+          label: user.name,
+          value: user.login
+        })));
 };

@@ -19,25 +19,19 @@
  */
 // @flow
 import React from 'react';
-import SearchSelect from '../../components/SearchSelect';
+import { Link } from 'react-router';
+import { translate } from '../../helpers/l10n';
 
-type Option = { label: string, value: string };
+const MarkdownTips = () => (
+  <div className="note">
+    <Link to="/markdown/help" className="text-muted" target="_blank">
+      {translate('markdown.helplink')}
+    </Link>
+    {': '}
+    <span className="spacer-left">{`*${translate('bold')}*`}</span>
+    <span className="spacer-left">{`\`\`${translate('code')}\`\``}</span>
+    <span className="spacer-left">{`* ${translate('bulleted_point')}`}</span>
+  </div>
+);
 
-type Props = {|
-  minimumQueryLength?: number,
-  onSearch: (query: string) => Promise<Array<Option>>,
-  onSelect: (value: string) => void,
-  renderOption?: (option: Object) => React.Element<*>
-|};
-
-export default class FacetFooter extends React.PureComponent {
-  props: Props;
-
-  render() {
-    return (
-      <div className="search-navigator-facet-footer">
-        <SearchSelect {...this.props} />
-      </div>
-    );
-  }
-}
+export default MarkdownTips;

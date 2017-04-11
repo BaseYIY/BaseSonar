@@ -29,6 +29,7 @@ import Sidebar from '../sidebar/Sidebar';
 import IssuesList from './IssuesList';
 import ComponentBreadcrumbs from './ComponentBreadcrumbs';
 import IssuesSourceViewer from './IssuesSourceViewer';
+import BulkChangeModal from './BulkChangeModal';
 import {
   parseQuery,
   areMyIssuesSelected,
@@ -44,7 +45,8 @@ import type {
   ReferencedComponent,
   ReferencedUser,
   ReferencedLanguage,
-  Component
+  Component,
+  CurrentUser
 } from '../utils';
 import ListFooter from '../../../components/controls/ListFooter';
 import Page from '../../../components/layout/Page';
@@ -52,7 +54,7 @@ import PageMain from '../../../components/layout/PageMain';
 import PageMainInner from '../../../components/layout/PageMainInner';
 import PageSide from '../../../components/layout/PageSide';
 import PageFilters from '../../../components/layout/PageFilters';
-import { translate } from '../../../helpers/l10n';
+import { translate, translateWithParameters } from '../../../helpers/l10n';
 import { scrollToElement } from '../../../helpers/scrolling';
 import type { Issue } from '../../../components/issue/types';
 
@@ -66,13 +68,15 @@ import type { Issue } from '../../../components/issue/types';
 
 type Props = {
   component?: Component,
-  currentUser: { isLoggedIn: boolean },
+  currentUser: CurrentUser,
   fetchIssues: () => Promise<*>,
   location: { pathname: string, query: { [string]: string } },
+  onRequestFail: (Error) => void,
   router: { push: () => void, replace: () => void }
 };
 
 type State = {
+  bulkChange: 'all' | 'selected' | null,
   checked: Array<string>,
   facets: { [string]: Facet },
   issues: Array<Issue>,
@@ -98,6 +102,7 @@ export default class App extends React.PureComponent {
   constructor(props: Props) {
     super(props);
     this.state = {
+      bulkChange: null,
       checked: [],
       facets: {},
       issues: [],
@@ -275,7 +280,7 @@ export default class App extends React.PureComponent {
     }
   };
 
-  fetchIssues(additional?: {}): Promise<*> {
+  fetchIssues = (additional?: {}): Promise<*> => {
     const { component } = this.props;
     const { myIssues, query } = this.state;
 
@@ -307,12 +312,11 @@ export default class App extends React.PureComponent {
       Object.assign(parameters, { assignees: '__me__' });
     }
 
-    this.setState({ loading: true });
-
     return this.props.fetchIssues(parameters);
-  }
+  };
 
   fetchFirstIssues() {
+    this.setState({ loading: true });
     this.fetchIssues().then(({ facets, issues, paging, ...other }) => {
       if (this.mounted) {
         const open = getOpen(this.props.location.query);
@@ -361,6 +365,7 @@ export default class App extends React.PureComponent {
 
     const p = paging.pageIndex + 1;
 
+    this.setState({ loading: true });
     this.fetchIssuesPage(p).then(response => {
       if (this.mounted) {
         this.setState(state => ({
@@ -392,6 +397,7 @@ export default class App extends React.PureComponent {
       return Promise.resolve(issues.filter(isSameComponent));
     }
 
+    this.setState({ loading: true });
     return this.fetchIssuesUntil(paging.pageIndex + 1, done).then(response => {
       const nextIssues = [...issues, ...response.issues];
 
@@ -407,6 +413,13 @@ export default class App extends React.PureComponent {
   isFiltered = () => {
     const serialized = serializeQuery(this.state.query);
     return !areQueriesEqual(serialized, DEFAULT_QUERY);
+  };
+
+  getCheckedIssues = () => {
+    const issues = this.state.checked.map(checked =>
+      this.state.issues.find(issue => issue.key === checked));
+    const paging = { pageIndex: 1, pageSize: issues.length, total: issues.length };
+    return Promise.resolve({ issues, paging });
   };
 
   handleFilterChange = (changes: {}) => {
@@ -469,6 +482,76 @@ export default class App extends React.PureComponent {
     }));
   };
 
+  openBulkChange = (mode: 'all' | 'selected') => {
+    this.setState({ bulkChange: mode });
+  };
+
+  closeBulkChange = () => {
+    this.setState({ bulkChange: null });
+  };
+
+  handleBulkChangeClick = (e: Event & { target: HTMLElement }) => {
+    e.preventDefault();
+    e.target.blur();
+    this.openBulkChange('all');
+  };
+
+  handleBulkChangeSelectedClick = (e: Event & { target: HTMLElement }) => {
+    e.preventDefault();
+    e.target.blur();
+    this.openBulkChange('selected');
+  };
+
+  handleBulkChangeDone = () => {
+    this.fetchFirstIssues();
+    this.closeBulkChange();
+  };
+
+  renderBulkChange(openIssue?: Issue) {
+    const { component, currentUser } = this.props;
+    const { bulkChange, checked, paging } = this.state;
+
+    if (!currentUser.isLoggedIn || openIssue != null) {
+      return null;
+    }
+
+    return (
+      <div className="pull-left">
+        {checked.length > 0
+          ? <div className="dropdown">
+              <button data-toggle="dropdown">
+                {translate('bulk_change')}
+                <i className="icon-dropdown little-spacer-left" />
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <a href="#" onClick={this.handleBulkChangeClick}>
+                    {translateWithParameters('issues.bulk_change', paging ? paging.total : 0)}
+                  </a>
+                </li>
+                <li>
+                  <a href="#" onClick={this.handleBulkChangeSelectedClick}>
+                    {translateWithParameters('issues.bulk_change_selected', checked.length)}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          : <button onClick={this.handleBulkChangeClick}>
+              {translate('bulk_change')}
+            </button>}
+        {bulkChange != null &&
+          <BulkChangeModal
+            component={component}
+            currentUser={currentUser}
+            fetchIssues={bulkChange === 'all' ? this.fetchIssues : this.getCheckedIssues}
+            onClose={this.closeBulkChange}
+            onDone={this.handleBulkChangeDone}
+            onRequestFail={this.props.onRequestFail}
+          />}
+      </div>
+    );
+  }
+
   render() {
     const { component, currentUser } = this.props;
     const { issues, paging, query } = this.state;
@@ -512,6 +595,7 @@ export default class App extends React.PureComponent {
         <PageMain>
           <HeaderPanel border={true}>
             <PageMainInner>
+              {this.renderBulkChange(openIssue)}
               {openIssue != null &&
                 <div className="pull-left">
                   <ComponentBreadcrumbs component={component} issue={openIssue} />
