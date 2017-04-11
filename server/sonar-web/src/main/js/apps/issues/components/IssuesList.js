@@ -27,6 +27,7 @@ type Props = {|
   checked: Array<string>,
   component?: Component,
   issues: Array<Issue>,
+  onFilterChange: (changes: {}) => void,
   onIssueChange: (Issue) => void,
   onIssueCheck?: (string) => void,
   onIssueClick: (string) => void,
@@ -50,6 +51,7 @@ export default class IssuesList extends React.PureComponent {
             onChange={this.props.onIssueChange}
             onCheck={this.props.onIssueCheck}
             onClick={this.props.onIssueClick}
+            onFilterChange={this.props.onFilterChange}
             previousIssue={index > 0 ? issues[index - 1] : null}
             selected={selectedIssue != null && selectedIssue.key === issue.key}
           />

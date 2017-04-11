@@ -27,7 +27,7 @@ import { updateIssue } from './actions';
 import { deleteIssueComment, editIssueComment } from '../../api/issues';
 import type { Issue } from './types';
 
-type Props = {
+type Props = {|
   checked?: boolean,
   currentPopup: string,
   issue: Issue,
@@ -36,10 +36,10 @@ type Props = {
   onCheck?: (string) => void,
   onClick: (string) => void,
   onFail: (Error) => void,
-  onFilterClick?: () => void,
+  onFilter?: (property: string, issue: Issue) => void,
   selected: boolean,
   togglePopup: (string) => void
-};
+|};
 
 export default class IssueView extends React.PureComponent {
   props: Props;
@@ -88,7 +88,7 @@ export default class IssueView extends React.PureComponent {
           issue={issue}
           currentPopup={this.props.currentPopup}
           onFail={this.props.onFail}
-          onFilterClick={this.props.onFilterClick}
+          onFilter={this.props.onFilter}
           togglePopup={this.props.togglePopup}
         />
         <IssueActionsBar

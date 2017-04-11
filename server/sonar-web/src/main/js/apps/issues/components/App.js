@@ -58,7 +58,6 @@ import { translate, translateWithParameters } from '../../../helpers/l10n';
 import { scrollToElement } from '../../../helpers/scrolling';
 import type { Issue } from '../../../components/issue/types';
 
-// TODO filter similar issues
 // TODO request facets on demand
 // TODO reload button
 // TODO no results
@@ -622,6 +621,7 @@ export default class App extends React.PureComponent {
                   checked={this.state.checked}
                   component={component}
                   issues={issues}
+                  onFilterChange={this.handleFilterChange}
                   onIssueChange={this.handleIssueChange}
                   onIssueCheck={currentUser.isLoggedIn ? this.handleIssueCheck : undefined}
                   onIssueClick={this.openIssue}

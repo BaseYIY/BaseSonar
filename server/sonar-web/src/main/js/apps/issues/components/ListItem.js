@@ -24,19 +24,61 @@ import Issue from '../../../components/issue/Issue';
 import type { Issue as IssueType } from '../../../components/issue/types';
 import type { Component } from '../utils';
 
-type Props = {
+type Props = {|
   checked: boolean,
   component?: Component,
   issue: IssueType,
   onChange: (IssueType) => void,
   onCheck?: (string) => void,
   onClick: (string) => void,
+  onFilterChange: (changes: {}) => void,
   previousIssue: ?Object,
   selected: boolean
+|};
+
+type State = {
+  similarIssues: boolean
 };
 
 export default class ListItem extends React.PureComponent {
   props: Props;
+  state: State = { similarIssues: false };
+
+  handleFilter = (property: string, issue: IssueType) => {
+    const { onFilterChange } = this.props;
+
+    const issuesReset = { issues: [] };
+
+    if (property.startsWith('tag###')) {
+      const tag = property.substr(6);
+      return onFilterChange({ ...issuesReset, tags: [tag] });
+    }
+
+    switch (property) {
+      case 'type':
+        return onFilterChange({ ...issuesReset, types: [issue.type] });
+      case 'severity':
+        return onFilterChange({ ...issuesReset, severities: [issue.severity] });
+      case 'status':
+        return onFilterChange({ ...issuesReset, statuses: [issue.status] });
+      case 'resolution':
+        return issue.resolution != null
+          ? onFilterChange({ ...issuesReset, resolved: true, resolutions: [issue.resolution] })
+          : onFilterChange({ ...issuesReset, resolved: false, resolutions: [] });
+      case 'assignee':
+        return issue.assignee != null
+          ? onFilterChange({ ...issuesReset, assigned: true, assignees: [issue.assignee] })
+          : onFilterChange({ ...issuesReset, assigned: false, assignees: [] });
+      case 'rule':
+        return onFilterChange({ ...issuesReset, rules: [issue.rule] });
+      case 'project':
+        return onFilterChange({ ...issuesReset, projects: [issue.projectUuid] });
+      case 'module':
+        return onFilterChange({ ...issuesReset, modules: [issue.subProjectUuid] });
+      case 'file':
+        return onFilterChange({ ...issuesReset, files: [issue.componentUuid] });
+    }
+  };
 
   render() {
     const { component, issue, previousIssue } = this.props;
@@ -55,6 +97,7 @@ export default class ListItem extends React.PureComponent {
           onChange={this.props.onChange}
           onCheck={this.props.onCheck}
           onClick={this.props.onClick}
+          onFilter={this.handleFilter}
           selected={this.props.selected}
         />
       </div>

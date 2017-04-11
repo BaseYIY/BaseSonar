@@ -31,7 +31,7 @@ type Props = {|
   onChange: (Issue) => void,
   onCheck?: (string) => void,
   onClick: (string) => void,
-  onFilterClick?: () => void,
+  onFilter?: (property: string, issue: Issue) => void,
   selected: boolean
 |};
 
@@ -151,7 +151,7 @@ export default class BaseIssue extends React.PureComponent {
         onCheck={this.props.onCheck}
         onClick={this.props.onClick}
         onFail={this.handleFail}
-        onFilterClick={this.props.onFilterClick}
+        onFilter={this.props.onFilter}
         onChange={this.props.onChange}
         togglePopup={this.togglePopup}
         currentPopup={this.state.currentPopup}

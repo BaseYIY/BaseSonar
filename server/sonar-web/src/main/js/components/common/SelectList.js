@@ -111,12 +111,16 @@ export default class SelectList extends React.PureComponent {
         ref={list => this.list = list}
         tabIndex={0}>
         {hasChildren &&
-          React.Children.map(children, child =>
-            React.cloneElement(child, {
-              active: this.state.active,
-              onHover: this.handleHover,
-              onSelect: this.handleSelect
-            }))}
+          React.Children.map(
+            children,
+            child =>
+              child != null &&
+              React.cloneElement(child, {
+                active: this.state.active,
+                onHover: this.handleHover,
+                onSelect: this.handleSelect
+              })
+          )}
         {!hasChildren &&
           this.props.items.map(item => (
             <SelectListItem
